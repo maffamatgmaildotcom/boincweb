@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  computer: MyString
+  project: MyString
+  name: MyString
+  cpu: MyString
+  progress: MyString
+  remaining: 2025-05-16 15:23:00
+  deadline: 2025-05-16 15:23:00
+  status: MyString
+
+two:
+  computer: MyString
+  project: MyString
+  name: MyString
+  cpu: MyString
+  progress: MyString
+  remaining: 2025-05-16 15:23:00
+  deadline: 2025-05-16 15:23:00
+  status: MyString

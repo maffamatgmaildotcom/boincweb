@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ResponsiveNav</title>
+    <title>BOINCWeb</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -11,10 +11,13 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 prose">
-      <%= render "shared/navigation" %>
-      <%= yield %>
-    </main>
+  <body class="bg-slate-300 flex flex-col">
+    <%= render 'shared/navigation' %>
+    <div class="bg-slate-300 flex">
+      <%= render 'shared/sidebar' %>
+      <main class="bg-slate-300 w-5/6 p-4 flex-grow">
+        <%= yield %>
+      </main>
+    </div>
   </body>
 </html>

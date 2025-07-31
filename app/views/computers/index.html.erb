@@ -1,0 +1,40 @@
+<h1 class="text-xl mb-2 font-semibold">Computers</h1>
+<div class="rounded-lg shadow">
+  <table iclass="w-full">
+    <thead>
+      <tr>
+        <th class="p-3 text-sm font-semibold tracking-wide text-left border border-slate-400">Name</td>
+        <th class="p-3 text-sm font-semibold tracking-wide text-left border border-slate-400">IP Address</td>
+        <th class="p-3 text-sm font-semibold tracking-wide text-left border border-slate-400">Port</td>
+        <th class="p-3 text-sm font-semibold tracking-wide text-left border border-slate-400">Active</td>
+        <th class="p-3 text-sm font-semibold tracking-wide text-left border border-slate-400">CPID</td>
+        <th class="p-3 text-sm font-semibold tracking-wide text-left border border-slate-400">OS Name</td>
+        <th class="p-3 text-sm font-semibold tracking-wide text-left border border-slate-400">OS Version</td>
+        <th class="p-3 text-sm font-semibold tracking-wide text-left border border-slate-400">Vendor</td>
+        <th class="p-3 text-sm font-semibold tracking-wide text-left border border-slate-400">Model</td>
+        <th class="p-3 text-sm font-semibold tracking-wide text-left border border-slate-400">CPUs</td>
+      </tr>
+    </thead>
+
+    <tbody id="computersTable" class="">
+      <% @computers.each do |computer| %>
+          <tr id="<%= dom_id(computer) %>" class='even:bg-gray-300 odd:bg-white'>
+            <td class="p-3 text-sm border border-slate-400"><%= computer.name %></td>
+            <td class="p-3 text-sm border border-slate-400"><%= computer.ip %></td>
+            <td class="p-3 text-sm border border-slate-400"><%= computer.port %></td>
+            <td class="p-3 text-sm border border-slate-400"><%= computer.active %></td>
+            <td class="p-3 text-sm border border-slate-400"><%= computer.cpid %></td>
+            <td class="p-3 text-sm border border-slate-400"><%= computer.os_name %></td>
+            <td class="p-3 text-sm border border-slate-400"><%= computer.os_version %></td>
+            <td class="p-3 text-sm border border-slate-400"><%= computer.vendor %></td>
+            <td class="p-3 text-sm border border-slate-400"><%= computer.model %></td>
+            <td class="p-3 text-sm border border-slate-400"><%= computer.cpu_count %></td>
+          </tr>
+      <% end %>
+    <tbody>
+
+    <tfooter>
+      <tr></tr>
+    </tfooter>
+  </table>
+</div>

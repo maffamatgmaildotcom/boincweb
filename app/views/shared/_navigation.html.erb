@@ -1,15 +1,23 @@
 <% items = [
-  ["Home", root_path],
-  ["Calendar", calendar_path],
+  ["Computers", computers_path],
   ["Projects", projects_path],
   ["Tasks", tasks_path],
-  ["Announcements", announcements_path]
+  ["Transfers", transfers_path],
+  ["Messages", messages_path],
+  ["History", history_path],
+  ["Notices", notices_path]
 ] %>
 
 <%= select_tag nil, options_for_select(items, request.path), class: "sm:hidden", onchange: "Turbo.visit(this.selectedOptions[0].value)" %>
 
-<ul class="hidden sm:block">
-  <% items.each do |text, path| %>
-    <li><%= link_to text, path %></li>
-  <% end %>
-</ul>
+<div class="bg-gray-100">
+  <ul class="hidden sm:flex flex-nowrap my-6 items-center justify-center list-none text-gray-700 font-bold dark:text-white">
+    <% items.each do |text, path| %>
+      <% url = params[:computer].present? ? "#{path}?computer=#{CGI.escape(params[:computer])}" : path %>
+      <% active = (request.path == path) ? "underline text-blue-700" : "" %>
+      <li class="me-4 hover:underline md:me-6 <%= active %>">
+        <%= link_to text, url, class: active %>
+      </li>
+    <% end %>
+  </ul>
+</div>

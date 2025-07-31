@@ -1,0 +1,24 @@
+<nav class="bg-slate-200 hidden md:flex flex-col text-center p-4 justify-between sticky h-[calc(100vh-80px)]" data-controller="sidebar" data-expanded="<%= (cookies[:sidebar_expanded] || true) %>">
+  <div class="flex flex-col text-left">
+    <ul class="flex flex-col">
+    <% @computers.each do |computer| %>
+      <% next if computer.name.nil? %>
+      <% selected = params[:computer].to_s.downcase == computer.name.downcase %>
+      <li>
+        <%= link_to url_for(params.to_unsafe_h.merge(computer: computer.name)),
+            class: "block py-2 px-3 rounded flex items-center hover:bg-blue-200 #{'bg-blue-300 font-semibold' if selected}" do %>
+          <%= image_tag "#{computer.name.downcase}.png", alt: "#{computer.name} icon", class: "mr-2 w-10 h-10" %>
+          <span class="[[data-expanded=false]_&]:hidden"><%= computer.name %></span>
+        <% end %>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+  <div class="text-left">
+    <%= button_to nil, data: { action: "click->sidebar#toggle" } do %>
+      <span class="[[data-expanded=true]_&]:hidden">➡️</span>
+      <span class="[[data-expanded=false]_&]:hidden">⬅️</span>
+      <span class="[[data-expanded=false]_&]:hidden">icons-only</span>
+    <% end %>
+  </div>
+</nav>

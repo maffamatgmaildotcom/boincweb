@@ -13,3 +13,8 @@
  *= require_tree .
  *= require_self
  */
+ /* for table creates and updates */
+.in-out {
+  animation: fade-in 0.5s ease-out,
+             slide-in 0.5s ease-out;
+}

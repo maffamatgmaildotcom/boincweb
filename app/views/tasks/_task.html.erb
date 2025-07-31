@@ -1,0 +1,24 @@
+<%# This partial renders a single task row in the tasks table %>  
+<% status_classes = {
+  "New"      => "bg-gray-200",
+  "Downloading" => "bg-gray-200",
+  "Ready to start" => "bg-green-200",
+  "Running"  => "bg-green-300",
+  "Uploading" => "bg-blue-100",
+  "Completed" => "bg-blue-200",
+  "Aborted"   => "bg-red-200",
+  "Compute error" => "bg-red-200",
+  'Upload failed' => "bg-red-200",
+} %>
+<tr id="<%= dom_id(task) %>" class="<%= status_classes[task.status] || 'even:bg-gray-300 odd:bg-white' %>">
+  <td class="p-3 text-sm border border-slate-400"><%= task.project %></td>
+  <td class="p-3 text-sm border border-slate-400"><%= task.progress %></td>
+  <td class="p-3 text-sm border border-slate-400"><%= task.status %></td>
+  <td class="p-3 text-sm border border-slate-400"><%= (task.elapsed == '00:00:00' && task.status == "Ready to start") ? '---' : task.elapsed %></td>
+  <td class="p-3 text-sm border border-slate-400"><%= (task.remaining == '00:00:00' && ["Ready to report", "Uploading", "Completed"].include?(task.status)) ? '---' : task.remaining  %></td>
+  <td class="p-3 text-sm border border-slate-400"><%= task.deadline %></td>
+  <td class="p-3 text-sm border border-slate-400"><%= task.application %></td>
+  <td class="p-3 text-sm border border-slate-400"><%= task.name %></td>
+  <td class="p-3 text-sm border border-slate-400"><%= task.computer %></td>
+  <td class="p-3 text-sm border border-slate-400"><%= (task.cpu == "0.0" && task.status == "Ready to start") ? "" : task.cpu %></td>
+</tr>
