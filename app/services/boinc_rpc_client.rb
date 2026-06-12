@@ -19,7 +19,7 @@ class BoincRpcClient
     request = "get_host_info"
     request_xml = %Q(<boinc_gui_rpc_request><#{request}/></boinc_gui_rpc_request>\003)
     response = do_request(request_xml)
-    puts response
+    # puts response
     doc = Nokogiri::XML(response)
     host_info = doc.xpath("//host_info")
     timezone = host_info.xpath("timezone").text.to_i
@@ -70,12 +70,24 @@ class BoincRpcClient
       timezone: timezone
     }
     # Handle special cases for IP addresses
-    if ip_addr == "192.168.5.79" # Mulan 2nd network adapter is not used
-      ip_addr = "192.168.5.78" # Mulan 1st network adapter
+    if ip_addr == "192.168.5.89" # Mulan 2nd network adapter is not used
+      ip_addr = "192.168.5.87"   # Mulan 1st network adapter
     end
-    attributes[:ip] = ip_addr
-    computer = Computer.find_or_initialize_by(ip: ip_addr)
-    computer.update(attributes) unless computer.nil?
+    # HACK: no idea how to handle VM ips addresses now that all the servers use
+    # Windows + WSL + Docker (boinc_buda_runner) and get_host_info returns virtual ips
+    attributes[:ip] = host_to_ip(domain_name)
+    attributes[:name] = domain_name
+    unless attributes[:ip].nil?
+      computer = Computer.find_or_initialize_by(ip: attributes[:ip])
+      unless computer.nil?
+        begin
+          permitted = attributes.select { |k, _| Computer.column_names.include?(k.to_s) }
+          computer.update(permitted)
+        rescue ActiveRecord::RecordNotUnique => e
+          puts e.message
+        end
+      end
+    end
   end
   
   def get_results(ip)
@@ -95,7 +107,7 @@ class BoincRpcClient
     # puts response
     doc = Nokogiri::XML(response)
     results = doc.xpath("//result")
-    #puts results
+    # puts results
     tasks = []
     results.each do |result|
       task_name = result.xpath("name").text
@@ -115,7 +127,7 @@ class BoincRpcClient
       state_string = state_display(state, fraction_done.to_f)
 
       attributes = {
-        computer: BoincRpcClient.hostname(ip),
+        computer: self.class.hostname(ip),
         name: task_name, 
         application: application_display(wu_name),
         project: project_display(project_url),
@@ -128,28 +140,41 @@ class BoincRpcClient
         result_xml: result.to_xml
       }
       unless task_name.nil? || task_name.empty?
-        Task.transaction do
-          task = Task.find_or_initialize_by(name: task_name, computer: BoincRpcClient.hostname(ip))
-          task.update(attributes)
-          task = task.first if task.respond_to?(:first)
-          tasks << task 
-        end
+          Task.transaction do
+            task = Task.find_or_initialize_by(name: task_name, computer: self.class.hostname(ip))
+            task.update(attributes)
+            tasks << task
+          end
       end
     end
     tasks
   end
 
+  def host_to_ip(host)
+    ips = { 
+      "olaf" => "192.168.5.91",
+      "elsa" => "192.168.5.97",
+      "grumpy" => "192.168.5.96",
+      "anna" => "192.168.5.94", 
+      "mulan" => "192.168.5.87",
+      "sven" => "192.168.5.93",
+      "minnie" => "192.168.5.95",
+      "kristoff" => "192.168.5.92",
+    }
+    ips[host.downcase]
+  end
+
   def self.hostname(ip)
-    hosts = { 
+    hosts = {
+      "192.168.5.87" => "mulan",
+      "192.168.5.89" => "mulan", 
       "192.168.5.91" => "olaf",
-      "192.168.5.97" => "elsa",
-      "192.168.5.81" => "grumpy",
-      "192.168.5.94" => "anna",
-      "192.168.5.78" => "mulan",
-      "192.168.5.79" => "mulan",
-      "192.168.5.93" => "sven",
-      "192.168.5.75" => "minnie",
       "192.168.5.92" => "kristoff",
+      "192.168.5.93" => "sven",
+      "192.168.5.94" => "anna",
+      "192.168.5.95" => "minnie",
+      "192.168.5.96" => "grumpy",
+      "192.168.5.97" => "elsa",
     }
     hosts[ip]
   end

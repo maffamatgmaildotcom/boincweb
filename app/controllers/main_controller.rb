@@ -30,7 +30,18 @@ class MainController < ApplicationController
 
      # @invoices = Invoice.order("#{sort_column} #{sort_direction}").page(params[:page]).per(10)
     @tasks = computer_name.present? ? Task.where(computer: computer_name).all : Task.all
-    @tasks = @tasks.where(status: "Running") if params[:filter].present? && params[:filter] == "active"
+    if params[:filter].present? && params[:filter] == "active"
+      @tasks = @tasks.where(status: "Running")
+    else
+      @tasks = @tasks.order(Arel.sql("
+        CASE LOWER(status)
+          WHEN 'running' THEN 1
+          WHEN 'ready to report' THEN 2
+          WHEN 'ready to start' THEN 3
+          ELSE 4
+        END, status
+        "))
+    end
     @tasks
   end
 

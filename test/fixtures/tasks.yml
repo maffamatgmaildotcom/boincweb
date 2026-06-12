@@ -1,21 +1,25 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  computer: MyString
-  project: MyString
-  name: MyString
-  cpu: MyString
-  progress: MyString
-  remaining: 2025-05-16 15:23:00
-  deadline: 2025-05-16 15:23:00
-  status: MyString
+  computer: olaf
+  project: World Community Grid
+  application: MCM
+  name: task_one
+  cpu: 50.00%
+  progress: 42.000%
+  elapsed: "01:23:45"
+  remaining: "02:00:00"
+  deadline: Mon May 16, 2025 15:23:00
+  status: Running
 
 two:
-  computer: MyString
-  project: MyString
-  name: MyString
-  cpu: MyString
-  progress: MyString
-  remaining: 2025-05-16 15:23:00
-  deadline: 2025-05-16 15:23:00
-  status: MyString
+  computer: elsa
+  project: World Community Grid
+  application: ARP
+  name: task_two
+  cpu: 100.00%
+  progress: 100.0%
+  elapsed: "12:00:00"
+  remaining: "---"
+  deadline: Tue May 17, 2025 10:00:00
+  status: Completed

@@ -41,3 +41,7 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
+#plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"] || Rails.env.development?
+# Ensure workers start even in development
+# workers Integer(ENV.fetch("WEB_CONCURRENCY") { 1 })
+# threads Integer(ENV.fetch("RAILS_MAX_THREADS") { 5 }), Integer(ENV.fetch("RAILS_MAX_THREADS") { 5 })

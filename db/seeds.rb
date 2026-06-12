@@ -10,11 +10,11 @@
 Computer.create([
   { id: 1, name: "ANNA", ip: "192.168.5.94", port: "31416", password: "deadbeef", selected: true, active: true },
   { id: 2, name: "ELSA", ip: "192.168.5.97", port: "31416", password: "deadbeef", selected: false, active: true },
-  { id: 3, name: "GRUMPY", ip: "192.168.5.81", port: "31416", password: "deadbeef", selected: false, active: true },
+  { id: 3, name: "GRUMPY", ip: "192.168.5.96", port: "31416", password: "deadbeef", selected: false, active: true },
   { id: 4, name: "OLAF", ip: "192.168.5.91", port: "31416", password: "deadbeef", selected: false, active: true },
-  { id: 5, name: "MULAN", ip: "192.168.5.78", port: "31416", password: "deadbeef", selected: false, active: true },
+  { id: 5, name: "MULAN", ip: "192.168.5.87", port: "31416", password: "deadbeef", selected: false, active: true },
   { id: 6, name: "SVEN", ip: "192.168.5.93", port: "31416", password: "deadbeef", selected: false, active: true },
-  { id: 7, name: "MINNIE", ip: "192.168.5.75", port: "31416", password: "deadbeef", selected: false, active: true },
+  { id: 7, name: "MINNIE", ip: "192.168.5.95", port: "31416", password: "deadbeef", selected: false, active: true },
   { id: 8, name: "KRISTOFF", ip: "192.168.5.92", port: "31416", password: "deadbeef", selected: false, active: true }
 ])
 # 

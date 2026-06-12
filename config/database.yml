@@ -12,17 +12,29 @@
 # Configure Using Gemfile
 # gem "pg"
 #
+# PostgreSQL. Versions 9.3 and up are supported.
+
 default: &default
-  adapter: postgresql
+  adapter: postgresql # <-- Add adapter to default too for maximum compatibility
   encoding: unicode
-  # For details on connection pooling, see Rails configuration guide
-  # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
-
 development:
-  <<: *default
-  database: boincweb_development
+  # Primary database for your main application models
+  primary:
+    <<: *default
+    database: boincweb_development
+    adapter: postgresql
+  
+  # Queue database for Solid Queue tables
+  queue:
+    <<: *default
+    database: boincweb_development_queue
+    adapter: postgresql
+  
+    # Optional but helpful: tells db:prepare where the queue schema lives
+    migrations_paths: db/queue_migrate
+
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -55,8 +67,20 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: boincweb_test
+  primary:
+    <<: *default
+    database: boincweb_test
+    adapter: postgresql
+  
+  # Queue database for Solid Queue tables
+  queue:
+    <<: *default
+    database: boincweb_test_queue
+    adapter: postgresql
+  
+    # Optional but helpful: tells db:prepare where the queue schema lives
+    migrations_paths: db/queue_migrate
+
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -78,9 +102,10 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
-production:
-  <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
-#database: boincweb_production
-#username: boincweb
-#password: <%= ENV["BOINCWEB_DATABASE_PASSWORD"] %>
+# production:
+#   <<: *default
+#   url: <%= ENV["DATABASE_URL"] %>
+#   database: boincweb_production
+#   adapter: postgresql
+#   username: boincweb
+#   password: <%= ENV["BOINCWEB_DATABASE_PASSWORD"] %>

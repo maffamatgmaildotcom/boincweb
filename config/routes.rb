@@ -1,6 +1,5 @@
-require "sidekiq/web"
 Rails.application.routes.draw do
-  mount Sidekiq::Web => "/sidekiq"
+  mount MissionControl::Jobs::Engine, at: "/jobs"
 
   scope controller: :main do
     get :projects

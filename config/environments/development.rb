@@ -32,6 +32,11 @@ Rails.application.configure do
 
     config.cache_store = :null_store
   end
+  # Use a real queuing backend for Active Job (and separate queues per environment).
+  config.active_job.queue_adapter = :solid_queue
+  # config.active_job.queue_name_prefix = "responsive_nav_development"
+   config.solid_queue.connects_to = { database: { writing: :queue, reading: :queue } }
+  config.solid_queue.logger = ActiveSupport::Logger.new(config.root.join('log', 'solid_queue.log'))
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
@@ -59,6 +64,7 @@ Rails.application.configure do
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
+  config.mission_control.jobs.http_basic_auth_enabled = false
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 
