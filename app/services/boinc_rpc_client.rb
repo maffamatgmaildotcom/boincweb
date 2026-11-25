@@ -114,9 +114,9 @@ class BoincRpcClient
       wu_name = result.xpath("wu_name").text
       project_url = result.xpath("project_url").text
       final_cpu_time = result.xpath("final_cpu_time").text.to_f
-      #final_elapsed_time = result.xpath("final_elapsed_time").text.to_f
+      final_elapsed_time = result.xpath("final_elapsed_time").text.to_f
       report_deadline = result.xpath("report_deadline").text.to_f
-      deadline = Time.at(report_deadline).to_datetime.strftime("%a %b %d, %Y %H:%I:%S")
+      deadline = Time.at(report_deadline).to_datetime.strftime("%a %b %d, %Y %H:%M:%S")
       remaining = result.xpath("estimated_cpu_time_remaining").text.to_f
       state = result.xpath("state").text.to_i
       fraction_done = result.xpath("active_task/fraction_done")&.text
@@ -131,9 +131,9 @@ class BoincRpcClient
         name: task_name, 
         application: application_display(wu_name),
         project: project_display(project_url),
-        cpu: cpu_display(final_cpu_time, current_cpu_time, elapsed_time),
+        cpu: cpu_display(final_cpu_time, final_elapsed_time, current_cpu_time, elapsed_time),
         progress: percent_done,
-        elapsed: elapsed_display(elapsed_time),
+        elapsed: elapsed_display(elapsed_time > 0.0 ? elapsed_time : final_elapsed_time),
         remaining: elapsed_display(remaining),
         deadline: deadline,
         status: state_string,
@@ -250,22 +250,11 @@ class BoincRpcClient
     app_name
   end
 
-  def cpu_display(final_cpu_time, current_cpu_time, elapsed_time)
-    cpu_time_display = final_cpu_time.to_s
-    if (final_cpu_time == 0.0) # active task
-      if (current_cpu_time == 0.0) || (elapsed_time == 0.0)
-        cpu_time_display = "0.0"
-      else
-        cpu = (current_cpu_time/elapsed_time) * 100.0
-        cpu = 100.0 if (cpu > 100.0) 
-        cpu_time_display = sprintf("%.2f%%", cpu)
-      end
-    else
-      cpu = (final_cpu_time/elapsed_time) * 100.0
-      cpu = 100.0 if (cpu > 100.0) 
-      cpu_time_display = sprintf("%.2f%%", cpu) 
-    end
-    cpu_time_display 
+  def cpu_display(final_cpu_time, final_elapsed_time, current_cpu_time, elapsed_time)
+    cpu_time, wall_time = final_cpu_time == 0.0 ? [current_cpu_time, elapsed_time] : [final_cpu_time, final_elapsed_time]
+    return "0.0" if cpu_time == 0.0 || wall_time == 0.0
+    cpu = [(cpu_time / wall_time) * 100.0, 100.0].min
+    sprintf("%.2f%%", cpu)
   end
 
   def elapsed_display(elapsed_seconds)
@@ -284,10 +273,12 @@ class BoincRpcClient
 
   def project_display(project_url)
     require 'uri'
-    parsed_url = URI.parse(project_url)
-    project_name = ""
-    project_name = parsed_url.host if parsed_url.host
-    parts = project_name.split(".") if project_name.include?(".")
+    project_name = begin
+      URI.parse(project_url).host.to_s
+    rescue URI::InvalidURIError
+      ""
+    end
+    parts = project_name.split(".")
     if parts.length > 2
       project_name = parts[-2]
     elsif parts.length == 2
@@ -313,14 +304,14 @@ class BoincRpcClient
       state_string = 'Downloading'
     when 2
       state_string = 'Ready to start'
-      state_string = 'Running' if fraction_done > 0.0 && fraction_done < 100.0
+      state_string = 'Running' if fraction_done > 0.0 && fraction_done < 1.0
     when 3
       state_string = 'Compute error'
     when 4
       state_string = 'Uploading'
     when 5
       state_string = 'Ready to report'
-      state_string = 'Completed' if fraction_done == 100.0
+      state_string = 'Completed' if fraction_done >= 1.0
     when 6
       state_string = 'Aborted'
     when 7

@@ -4,7 +4,7 @@ class UpdateTasksJob < ApplicationJob
   def perform
     # puts "**************** HEY, I'm running the UpdateTasksJob (perform) ***************"
     begin
-      Computer.find_each do |computer|
+      Computer.where.not(name: [nil, ""]).find_each do |computer|
         # Initialize your RPC client (adjust as needed for your app)
         client = BoincRpcClient.new(computer.ip, computer.port || 31416, computer.password || "deadbeef", false)
         # get_results creates or updates the tasks in the db
